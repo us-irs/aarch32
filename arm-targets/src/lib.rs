@@ -129,6 +129,8 @@ impl Arch {
             Some(Arch::Armv7R)
         } else if target.starts_with("armv8r-") {
             Some(Arch::Armv8R)
+        } else if target.starts_with("armv7a-") {
+            Some(Arch::Armv7A)
         } else if target.starts_with("aarch64-") || target.starts_with("aarch64be-") {
             Some(Arch::Armv8A)
         } else {

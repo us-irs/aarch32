@@ -3,8 +3,9 @@ exclude = [
   "arm-targets",
 ]
 members = [
-  "cortex-r",
-  "cortex-r-examples",
+  "cortex-r-a",
+  "cortex-r-a-examples",
   "cortex-r-rt",
+  "cortex-a-rt",
 ]
 resolver = "2"

@@ -4,8 +4,7 @@
 #![no_main]
 
 // pull in our start-up code
-use cortex_r as _;
-use cortex_r_examples as _;
+use cortex_r_a_examples as _;
 
 use arm_gic::{
     gicv3::{Group, SgiTarget},
@@ -13,18 +12,9 @@ use arm_gic::{
 };
 use semihosting::println;
 
-type SingleCoreGic = arm_gic::gicv3::GicV3<1>;
+cortex_r_a_examples::entry_point!();
 
-/// The entry-point to the Rust application.
-///
-/// It is called by the start-up code in `cortex-m-rt`.
-#[no_mangle]
-pub extern "C" fn kmain() {
-    if let Err(e) = main() {
-        panic!("main returned {:?}", e);
-    }
-    semihosting::process::exit(0);
-}
+type SingleCoreGic = arm_gic::gicv3::GicV3<1>;
 
 /// Offset from PERIPHBASE for GIC Distributor
 const GICD_BASE_OFFSET: usize = 0x0000_0000usize;
@@ -33,16 +23,16 @@ const GICD_BASE_OFFSET: usize = 0x0000_0000usize;
 const GICR_BASE_OFFSET: usize = 0x0010_0000usize;
 
 fn dump_cpsr() {
-    let cpsr = cortex_r::register::Cpsr::read();
+    let cpsr = cortex_r_a::register::Cpsr::read();
     println!("CPSR: {:?}", cpsr);
 }
 
 /// The main function of our Rust application.
 ///
 /// Called by [`kmain`].
-fn main() -> Result<(), core::fmt::Error> {
+pub fn main() -> ! {
     // Get the GIC address by reading CBAR
-    let periphbase = cortex_r::register::ImpCbar::read().periphbase();
+    let periphbase = cortex_r_a::register::ImpCbar::read().periphbase();
     println!("Found PERIPHBASE {:010p}", periphbase);
     let gicd_base = periphbase.wrapping_byte_add(GICD_BASE_OFFSET);
     let gicr_base = periphbase.wrapping_byte_add(GICR_BASE_OFFSET);
@@ -70,7 +60,7 @@ fn main() -> Result<(), core::fmt::Error> {
     println!("Enabling interrupts...");
     dump_cpsr();
     unsafe {
-        cortex_r::interrupt::enable();
+        cortex_r_a::interrupt::enable();
     }
     dump_cpsr();
 
@@ -87,10 +77,10 @@ fn main() -> Result<(), core::fmt::Error> {
     );
 
     for _ in 0..1_000_000 {
-        cortex_r::asm::nop();
+        cortex_r_a::asm::nop();
     }
 
-    Ok(())
+    semihosting::process::exit(0);
 }
 
 #[no_mangle]

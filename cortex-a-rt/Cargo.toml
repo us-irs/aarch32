@@ -1,9 +1,13 @@
 [package]
-authors = ["Jonathan Pallant <jonathan.pallant@ferrous-systems.com>", "The Cortex-R Team <cortex-r@teams.rust-embedded.org>"]
-description = "Run-time support for Arm Cortex-R"
+authors = [
+  "Robin Mueller <muellerr@irs.uni-stuttgart.de>",
+  "Jonathan Pallant <jonathan.pallant@ferrous-systems.com>",
+  "The Cortex-R Team <cortex-r@teams.rust-embedded.org>"
+]
+description = "Run-Time support for Arm Cortex-A"
 edition = "2021"
 license = "MIT OR Apache-2.0"
-name = "cortex-r-rt"
+name = "cortex-a-rt"
 readme = "README.md"
 repository = "https://github.com/rust-embedded/cortex-r.git"
 rust-version = "1.82"
@@ -16,6 +20,9 @@ semihosting = {version = "0.1.18", features = ["stdio"]}
 [features]
 # Enable the FPU on start-up, even on a soft-float EABI target
 eabi-fpu = []
+# Specify that the target VFP has double precision support. If the target has NEON support, it
+# also requires double precision support for the VFP.
+vfp-dp = []
 
 [build-dependencies]
 arm-targets = {version = "0.1.0", path = "../arm-targets"}

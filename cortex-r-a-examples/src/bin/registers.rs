@@ -4,16 +4,16 @@
 #![no_main]
 
 // pull in our start-up code
-use cortex_r as _;
-use cortex_r_examples as _;
+use cortex_r_a_examples as _;
 
 use semihosting::println;
+
+cortex_r_a_examples::entry_point!();
 
 /// The entry-point to the Rust application.
 ///
 /// It is called by the start-up code in `cortex-m-rt`.
-#[no_mangle]
-pub extern "C" fn kmain() {
+pub fn main() -> ! {
     chip_info();
     #[cfg(arm_architecture = "v7-r")]
     mpu_pmsa_v7();
@@ -24,14 +24,15 @@ pub extern "C" fn kmain() {
 }
 
 fn chip_info() {
-    println!("{:?}", cortex_r::register::Midr::read());
-    println!("{:?}", cortex_r::register::Cpsr::read());
+    println!("{:?}", cortex_r_a::register::Midr::read());
+    println!("{:?}", cortex_r_a::register::Cpsr::read());
+    println!("{:?}", cortex_r_a::register::Mpidr::read());
     #[cfg(arm_architecture = "v8-r")]
     {
-        println!("{:?}", cortex_r::register::ImpCbar::read());
-        println!("{:?}", cortex_r::register::Vbar::read());
+        println!("{:?}", cortex_r_a::register::ImpCbar::read());
+        println!("{:?}", cortex_r_a::register::Vbar::read());
         // This only works in EL2 and start-up put us in EL1
-        // println!("{:?}", cortex_r::register::Hvbar::read());
+        // println!("{:?}", cortex_r_a::register::Hvbar::read());
     }
 }
 
@@ -140,12 +141,12 @@ fn mpu_pmsa_v8() {
 fn test_changing_sctlr() {
     println!(
         "{:?} before setting C, I and Z",
-        cortex_r::register::Sctlr::read()
+        cortex_r_a::register::Sctlr::read()
     );
-    cortex_r::register::Sctlr::modify(|w| {
+    cortex_r_a::register::Sctlr::modify(|w| {
         w.set_c(true);
         w.set_i(true);
         w.set_z(true);
     });
-    println!("{:?} after", cortex_r::register::Sctlr::read());
+    println!("{:?} after", cortex_r_a::register::Sctlr::read());
 }
