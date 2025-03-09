@@ -98,7 +98,7 @@
 
 #![no_std]
 
-use cortex_ar::register::{cpsr::ProcessorMode, Cpsr};
+use cortex_ar::{asm::nop, register::{cpsr::ProcessorMode, Cpsr}};
 
 /// Our default exception handler.
 ///
@@ -106,8 +106,9 @@ use cortex_ar::register::{cpsr::ProcessorMode, Cpsr};
 /// file hasn't been over-ridden.
 #[no_mangle]
 pub extern "C" fn _default_handler() {
-    semihosting::eprintln!("Unhandled exception!");
-    semihosting::process::abort();
+    loop {
+        nop();
+    }
 }
 
 // The Interrupt Vector Table, and some default assembly-language handler.
